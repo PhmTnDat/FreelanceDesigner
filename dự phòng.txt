@@ -10,16 +10,15 @@
     <style>
         /* --- CẤU HÌNH LIQUID GLASS --- */
         :root {
-            /* Điều chỉnh lại màu text body cho hợp nền tối */
-            --bg-body: #05000a; /* Màu nền dự phòng tối */
-            --primary: #e0e0e0; /* Màu chữ sáng hơn để nổi trên nền tối */     
-            --accent: #ff3333;  /* Màu nhấn đỏ tươi hơn */     
-            --accent-hover: #ff6666; 
+            --bg-body: #f0f4f8;      
+            --primary: #444444;      
+            --accent: #da0b0b;       
+            --accent-hover: #e00000; 
             
-            /* Glassmorphism Variables - Điều chỉnh cho nền tối */
-            --glass-bg: rgba(40, 10, 10, 0.45); /* Nền kính tối màu đỏ */
-            --glass-border: 1px solid rgba(255, 100, 100, 0.2); /* Viền kính đỏ nhạt */
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); /* Bóng tối hơn */
+            /* Glassmorphism Variables */
+            --glass-bg: rgba(255, 255, 255, 0.35); /* Nền kính mờ */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.65); /* Viền kính sáng */
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1); /* Bóng kính */
             --glass-blur: blur(16px); /* Độ mờ */
             
             --radius-box: 24px;
@@ -40,20 +39,50 @@
             position: relative;
         }
 
-        /* --- BACKGROUND PIXEL SPACE (MỚI) --- */
-        #pixel-space-bg {
+        /* --- BACKGROUND BLOBS (HIỆU ỨNG CHẤT LỎNG NỀN) --- */
+        .background-blobs {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            /* Quan trọng: Giữ cho các pixel sắc nét */
-            image-rendering: pixelated; 
-            background: #0a000f; /* Nền vũ trụ đen đỏ tím */
+            overflow: hidden;
+            background: #fdfbf7;
         }
 
-        /* ĐÃ XÓA CÁC CLASS BLOBS CŨ (background-blobs, blob, animation float) */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 10s infinite alternate;
+        }
+
+        .blob-1 {
+            width: 400px; height: 400px;
+            background: #f89999;
+            top: -50px; left: -100px;
+        }
+
+        .blob-2 {
+            width: 500px; height: 500px;
+            background: #c2e9ff;
+            bottom: -100px; right: -100px;
+            animation-duration: 15s;
+        }
+
+        .blob-3 {
+            width: 300px; height: 300px;
+            background: #ffc2ca;
+            top: 40%; left: 40%;
+            animation-duration: 12s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 50px) scale(1.1); }
+        }
 
         /* --- CHUNG CHO GLASS EFFECT --- */
         .glass-panel {
@@ -71,11 +100,11 @@
 
         /* --- HEADER --- */
         header {
-            /* Glass Effect cho Header trên nền tối */
-            background: rgba(30, 10, 10, 0.6);
+            /* Glass Effect cho Header */
+            background: rgba(255, 255, 255, 0.5);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 50, 50, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             
             padding: 0.8rem 2rem;
             position: fixed;
@@ -88,17 +117,17 @@
             justify-content: space-between;
             align-items: center;
             border-radius: 50px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
         }
 
-        .logo { font-size: 1.4rem; font-weight: 700; padding-left: 10px; color: white; }
+        .logo { font-size: 1.4rem; font-weight: 700; padding-left: 10px; }
         .logo span { color: var(--accent); }
 
         nav ul { display: flex; gap: 2rem; padding-right: 10px; }
-        nav a { font-weight: 600; font-size: 0.95rem; transition: var(--transition); color: #ccc; }
-        nav a:hover { color: var(--accent); text-shadow: 0 0 10px rgba(255, 50, 50, 0.5); }
+        nav a { font-weight: 600; font-size: 0.95rem; transition: var(--transition); }
+        nav a:hover { color: var(--accent); text-shadow: 0 0 10px rgba(32, 110, 255, 0.3); }
 
-        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; padding-right: 10px; color: white;}
+        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; padding-right: 10px; }
 
         /* --- HERO --- */
         .hero {
@@ -117,8 +146,7 @@
             line-height: 1.2;
             font-weight: 700;
             animation: fadeIn Up 1s ease;
-            color: white;
-            text-shadow: 3px 3px 0px var(--accent), -3px -3px 0px rgba(50,0,0,0.5); /* Hiệu ứng text pixel nhẹ */
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
         }
 
         .hero p {
@@ -127,12 +155,11 @@
             margin-bottom: 2.5rem;
             font-weight: 500;
             animation: fadeIn 1.5s ease;
-            color: #ddd;
         }
 
         .btn {
             padding: 15px 45px;
-            background: rgba(255, 50, 50, 0.2); /* Nút kính tối hơn */
+            background: rgba(255, 255, 255, 0.4); /* Nút kính trong suốt */
             backdrop-filter: blur(10px);
             border: 2px solid var(--accent);
             color: var(--accent);
@@ -142,14 +169,14 @@
             transition: var(--transition);
             display: inline-block;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 50, 50, 0.2);
+            box-shadow: 0 5px 15px rgba(32, 110, 255, 0.15);
         }
 
         .btn:hover {
             background: var(--accent);
             color: white;
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(255, 50, 50, 0.4);
+            box-shadow: 0 15px 30px rgba(32, 110, 255, 0.3);
         }
 
         /* --- SECTIONS --- */
@@ -161,7 +188,6 @@
             margin-bottom: 3.5rem;
             font-weight: 700;
             position: relative;
-            color: white;
         }
 
         .section-title::after {
@@ -173,8 +199,8 @@
             bottom: -15px;
             left: 50%;
             transform: translateX(-50%);
-            border-radius: 0px; /* Pixel style vuông góc */
-            box-shadow: 0 0 15px var(--accent);
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--accent);
         }
 
         /* --- ABOUT --- */
@@ -189,8 +215,8 @@
 
         .about-image img {
             border-radius: 30px;
-            border: 4px solid rgba(255, 100, 100, 0.3);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 4px solid rgba(255,255,255,0.8);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
         /* --- PORTFOLIO --- */
@@ -209,7 +235,7 @@
         
         .category-card:hover {
             transform: translateY(-10px);
-            background: rgba(255, 50, 50, 0.3);
+            background: rgba(255, 255, 255, 0.6);
             border-color: var(--accent);
         }
 
@@ -217,12 +243,12 @@
             font-size: 3rem;
             color: var(--accent);
             margin-bottom: 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.5);
             width: 80px; height: 80px;
             line-height: 80px;
             border-radius: 50%;
             transition: var(--transition);
-            box-shadow: inset 0 0 20px rgba(255, 50, 50, 0.2);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.8);
         }
 
         .category-card:hover i { 
@@ -244,13 +270,13 @@
             align-items: center;
             margin-bottom: 2rem;
             padding-bottom: 1rem;
-            border-bottom: 2px dashed rgba(255, 100, 100, 0.3);
+            border-bottom: 2px dashed rgba(0,0,0,0.1);
         }
 
         .gallery-header h3 { color: var(--accent); font-weight: 700; font-size: 1.5rem; }
 
         .back-btn {
-            background: rgba(255, 50, 50, 0.1);
+            background: rgba(255,255,255,0.5);
             border: 1px solid var(--accent);
             color: var(--accent);
             padding: 10px 25px;
@@ -276,8 +302,8 @@
             border-radius: 20px;
             height: 250px; /* Tăng chiều cao một chút cho đẹp */
             cursor: pointer;
-            border: 4px solid rgba(255, 100, 100, 0.2); /* Viền kính tối */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 4px solid rgba(255,255,255,0.5); /* Viền kính */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .portfolio-item img {
@@ -291,8 +317,8 @@
         .overlay {
             position: absolute;
             inset: 0;
-            background: rgba(20, 0, 0, 0.85); /* Overlay tối màu đỏ */
-            color: var(--accent);
+            background: rgba(255, 255, 255, 0.85); /* Màu xanh accent */
+            color: rgb(255, 0, 0);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -314,48 +340,43 @@
         
         .form-group label {
             display: block; margin-bottom: 0.8rem;
-            font-weight: 700; padding-left: 10px; color: #ddd;
+            font-weight: 700; padding-left: 10px;
         }
 
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 15px 20px;
-            border: 1px solid rgba(255, 100, 100, 0.3);
+            border: 1px solid rgba(255,255,255,0.8);
             border-radius: 20px;
             font-family: inherit;
-            background: rgba(30, 10, 10, 0.6); /* Input nền tối */
+            background: rgba(255, 255, 255, 0.5);
             transition: var(--transition);
-            color: white; /* Chữ input màu trắng */
-        }
-        
-        .form-group input::placeholder, .form-group textarea::placeholder {
-             color: rgba(255, 255, 255, 0.5);
+            color: var(--primary);
         }
 
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--accent);
-            background: rgba(40, 10, 10, 0.8);
-            box-shadow: 0 0 15px rgba(255, 50, 50, 0.3);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 15px rgba(32, 110, 255, 0.2);
         }
 
         .submit-btn { width: 100%; padding: 15px; margin-top: 10px; }
 
         /* --- FOOTER --- */
         footer {
-            background: rgba(30, 10, 10, 0.6);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
             padding: 4rem 10%;
             text-align: center;
             margin-top: 3rem;
-            border-top: 1px solid rgba(255, 50, 50, 0.2);
-            color: #ccc;
+            border-top: 1px solid rgba(255,255,255,0.5);
         }
 
         .social-icons a {
             font-size: 1.5rem; margin: 0 10px;
             color: var(--accent);
-            background: rgba(255, 50, 50, 0.1);
+            background: rgba(255,255,255,0.6);
             width: 50px; height: 50px; line-height: 50px;
             border-radius: 50%;
             display: inline-block;
@@ -366,7 +387,6 @@
             background: var(--accent); 
             color: white; 
             transform: translateY(-5px);
-            box-shadow: 0 0 15px var(--accent);
         }
 
         @keyframes fadeIn {
@@ -388,12 +408,12 @@
                 flex-direction: column;
                 position: absolute;
                 top: 70px; right: 0;
-                background: rgba(30, 10, 10, 0.95); /* Menu mobile tối */
+                background: rgba(255,255,255,0.95);
                 backdrop-filter: blur(20px);
                 width: 100%; text-align: center;
                 padding: 20px 0;
                 border-radius: 20px;
-                border: 1px solid rgba(255, 50, 50, 0.3);
+                border: 1px solid white;
             }
             
             nav ul.active { display: flex; }
@@ -407,7 +427,11 @@
 </head>
 <body>
 
-    <canvas id="pixel-space-bg"></canvas>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
 
     <header>
         <div class="logo">Phạm Tấn Đạt<span>.</span></div>
@@ -513,90 +537,6 @@
     </footer>
 
     <script>
-        // --- SCRIPT HIỆU ỨNG NỀN PIXEL VŨ TRỤ ĐỎ ---
-        const canvas = document.getElementById('pixel-space-bg');
-        const ctx = canvas.getContext('2d');
-
-        let width, height;
-        let stars = [];
-        // Bảng màu vũ trụ đỏ pixel
-        const colors = ['#ff3333', '#ad0000', '#ff8c00', '#ffb3b3', '#660000', '#cc4400'];
-
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            initStars();
-        }
-
-        class Star {
-            constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                // Kích thước pixel (hình vuông)
-                this.size = Math.floor(Math.random() * 4) + 2; 
-                // Tốc độ di chuyển (parallax)
-                this.speedX = Math.random() * 0.5 - 0.25; 
-                this.speedY = Math.random() * 0.2 + 0.1;
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-                // Độ lấp lánh
-                this.alpha = Math.random();
-                this.alphaChange = (Math.random() * 0.02) - 0.01;
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.alpha += this.alphaChange;
-
-                // Hiệu ứng lấp lánh (đổi chiều alpha khi quá sáng/tối)
-                if (this.alpha <= 0.2 || this.alpha >= 1) {
-                    this.alphaChange = -this.alphaChange;
-                }
-
-                // Reset vị trí khi sao đi ra ngoài màn hình
-                if (this.y > height) this.y = -this.size;
-                if (this.x > width) this.x = 0;
-                if (this.x < 0) this.x = width;
-            }
-
-            draw() {
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                // Vẽ hình vuông để tạo cảm giác pixel
-                ctx.fillRect(Math.floor(this.x), Math.floor(this.y), this.size, this.size);
-                ctx.globalAlpha = 1;
-            }
-        }
-
-        function initStars() {
-            stars = [];
-            let numStars = Math.floor((width * height) / 4000); // Mật độ sao
-            for (let i = 0; i < numStars; i++) {
-                stars.push(new Star());
-            }
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, width, height);
-            // Vẽ nền tối nhẹ mỗi khung hình để tạo vệt mờ (optional, đang tắt để pixel sắc nét)
-            // ctx.fillStyle = 'rgba(10, 0, 15, 0.2)';
-            // ctx.fillRect(0, 0, width, height);
-
-            stars.forEach(star => {
-                star.update();
-                star.draw();
-            });
-            requestAnimationFrame(animate);
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-        animate();
-        // --- KẾT THÚC SCRIPT HIỆU ỨNG NỀN ---
-
-
         function toggleMenu() {
             var nav = document.getElementById('nav-list');
             nav.classList.toggle('active');
