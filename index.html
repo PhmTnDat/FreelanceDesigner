@@ -22,6 +22,11 @@
             --tech-font: 'Space Grotesk', sans-serif;
             --body-font: 'Quicksand', sans-serif;
             --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* Màu cho hiệu ứng Liquid Background */
+            --blob-color-1: rgba(255, 42, 42, 0.3);
+            --blob-color-2: rgba(100, 0, 255, 0.2);
+            --blob-color-3: rgba(255, 100, 0, 0.2);
         }
 
         body.light-mode {
@@ -33,6 +38,11 @@
             --glass-shadow: 0 8px 32px 0 rgba(100, 100, 100, 0.1); 
             --input-bg: rgba(255, 255, 255, 0.9);
             --input-text: #333333;
+
+            /* Màu cho hiệu ứng Liquid Background (Light) */
+            --blob-color-1: rgba(255, 100, 100, 0.4);
+            --blob-color-2: rgba(100, 200, 255, 0.4);
+            --blob-color-3: rgba(255, 200, 100, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -52,10 +62,54 @@
             font-family: var(--tech-font);
         }
 
-        /* --- BACKGROUND PIXEL SPACE --- */
+        /* --- BACKGROUND LAYERS --- */
+        
+        /* 1. Pixel Stars (Giữ nguyên) */
         #pixel-space-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;
             image-rendering: pixelated; 
+        }
+
+        /* 2. Liquid Glass Background (Mới thêm) */
+        .liquid-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px); /* Độ nhòe lớn tạo cảm giác chất lỏng */
+            opacity: 0.6;
+            animation: moveBlob 20s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .blob-1 {
+            top: -10%; left: -10%; width: 50vw; height: 50vw;
+            background: var(--blob-color-1);
+            animation-duration: 25s;
+        }
+        .blob-2 {
+            bottom: -10%; right: -10%; width: 60vw; height: 60vw;
+            background: var(--blob-color-2);
+            animation-duration: 30s;
+            animation-delay: -5s;
+        }
+        .blob-3 {
+            top: 40%; left: 30%; width: 40vw; height: 40vw;
+            background: var(--blob-color-3);
+            animation-duration: 20s;
+            animation-delay: -10s;
+        }
+
+        @keyframes moveBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0, 0) scale(1); }
         }
 
         /* --- UTILITIES --- */
@@ -132,6 +186,7 @@
         .hero h1 span.gradient-text {
             background: linear-gradient(90deg, var(--accent), #ff8888);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
@@ -315,18 +370,68 @@
             margin-top: 50px;
         }
 
-        .vertical-gallery img {
+        /* --- LIQUID GLASS CARD EFFECT (CARD TRONG MODAL) --- */
+        .liquid-card {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: transparent;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); /* Bóng đổ sâu */
+            transform: translateZ(0); /* Kích hoạt tăng tốc phần cứng */
+            opacity: 0;
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        /* Lớp giả kính bóng loáng (Overlay) */
+        .liquid-card::after {
+            content: '';
+            position: absolute;
+            inset: 0; /* Full cover */
+            border-radius: 15px;
+            background: linear-gradient(
+                135deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.05) 40%, 
+                rgba(255, 255, 255, 0) 50%, 
+                rgba(255, 255, 255, 0.05) 60%, 
+                rgba(255, 255, 255, 0.25) 100%
+            );
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.1); /* Glow bên trong */
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Hiệu ứng ánh sáng trượt qua (Sheen) */
+        .liquid-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -150%;
+            width: 100%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+            transform: skewX(-25deg);
+            z-index: 3;
+            transition: none;
+        }
+
+        .liquid-card:hover::before {
+            left: 150%;
+            transition: 0.8s ease-in-out; /* Tốc độ ánh sáng trượt */
+        }
+
+        .liquid-card img {
             width: 100%;
             height: auto;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: fadeUp 0.5s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); /* Hiệu ứng nảy nhẹ */
+        }
+
+        .liquid-card:hover img {
+            transform: scale(1.05); /* Zoom ảnh khi hover */
         }
 
         @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -342,6 +447,13 @@
     </style>
 </head>
 <body class="light-mode">
+    
+    <div class="liquid-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    
     <canvas id="pixel-space-bg"></canvas>
 
     <header id="main-header">
@@ -435,19 +547,19 @@
                 <div class="grid-info"><span class="grid-tag">Poster</span><h3 class="grid-title">Poster Phim</h3></div>
             </div>
 
-            <div class="grid-item brand" onclick="openBrandingModal()">
-                <img src="ảnh/1.jpg" alt="Brand 1">
-                <div class="grid-info"><span class="grid-tag">Branding</span><h3 class="grid-title">JUTU Coffee</h3></div>
+            <div class="grid-item brand" onclick="openBrandingModal('project1')">
+                <img src="brand/kawfy-01.png" alt="Brand 1">
+                <div class="grid-info"><span class="grid-tag">Branding</span><h3 class="grid-title">Kawfy Coffee</h3></div>
             </div>
-            <div class="grid-item brand" onclick="openBrandingModal()">
+            <div class="grid-item brand" onclick="openBrandingModal('project2')">
                 <img src="ảnh/2.jpg" alt="Brand 2">
                 <div class="grid-info"><span class="grid-tag">Branding</span><h3 class="grid-title">Nam Oil Identity</h3></div>
             </div>
-            <div class="grid-item brand" onclick="openBrandingModal()">
+            <div class="grid-item brand" onclick="openBrandingModal('project3')">
                 <img src="ảnh/3.jpg" alt="Brand 3">
                 <div class="grid-info"><span class="grid-tag">Branding</span><h3 class="grid-title">Street Racing</h3></div>
             </div>
-            <div class="grid-item brand" onclick="openBrandingModal()">
+            <div class="grid-item brand" onclick="openBrandingModal('project4')">
                 <img src="ảnh/4.jpg" alt="Brand 4">
                 <div class="grid-info"><span class="grid-tag">Branding</span><h3 class="grid-title">Tech Corp</h3></div>
             </div>
@@ -741,20 +853,55 @@
         // Mặc định load tab 'poster'
         filterSelection('poster');
 
-        // --- 4. MODAL LOGIC (TẠO 10 ẢNH DỌC) ---
-        function openBrandingModal() {
+        // --- 4. MODAL LOGIC (ĐA DỰ ÁN - MULTI PROJECT) ---
+        
+        // CẤU HÌNH ẢNH CHO TỪNG DỰ ÁN
+        const projectContent = {
+            'project1': [
+                "brand/kawfy-01.png", "brand/kawfy-02.png", "brand/kawfy-03.png", "brand/kawfy-04.png", "brand/kawfy-05.png",
+                "brand/kawfy-06.png", "brand/kawfy-07.png", "brand/kawfy-08.png", "brand/kawfy-09.png", "brand/kawfy-10.png"
+            ],
+            'project2': [
+                "brand/namoil_01.jpg", "brand/namoil_02.jpg", "brand/namoil_03.jpg", "brand/namoil_04.jpg", "brand/namoil_05.jpg",
+                "brand/namoil_06.jpg", "brand/namoil_07.jpg", "brand/namoil_08.jpg", "brand/namoil_09.jpg", "brand/namoil_10.jpg"
+            ],
+            'project3': [
+                "brand/racing_01.jpg", "brand/racing_02.jpg", "brand/racing_03.jpg", "brand/racing_04.jpg", "brand/racing_05.jpg",
+                "brand/racing_06.jpg", "brand/racing_07.jpg", "brand/racing_08.jpg", "brand/racing_09.jpg", "brand/racing_10.jpg"
+            ],
+            'project4': [
+                "brand/tech_01.jpg", "brand/tech_02.jpg", "brand/tech_03.jpg", "brand/tech_04.jpg", "brand/tech_05.jpg",
+                "brand/tech_06.jpg", "brand/tech_07.jpg", "brand/tech_08.jpg", "brand/tech_09.jpg", "brand/tech_10.jpg"
+            ]
+        };
+
+        function openBrandingModal(projectId) {
             const modal = document.getElementById('projectModal');
             const gallery = document.getElementById('galleryContainer');
             
+            // Lấy danh sách ảnh dựa trên projectId, nếu không tìm thấy thì dùng mảng rỗng
+            const images = projectContent[projectId] || [];
+
             gallery.innerHTML = '';
 
-            for (let i = 1; i <= 10; i++) {
+            images.forEach((src, index) => {
+                // Tạo thẻ div bao bên ngoài để làm hiệu ứng kính lỏng
+                const card = document.createElement('div');
+                card.className = 'liquid-card'; 
+                card.style.animationDelay = `${index * 0.1}s`; // Hiệu ứng xuất hiện lần lượt
+
                 const img = document.createElement('img');
-                img.src = `ảnh/${i}.jpg`; 
-                img.alt = `Detail Image ${i}`;
-                img.style.animationDelay = `${i * 0.1}s`;
-                gallery.appendChild(img);
-            }
+                img.src = src; 
+                img.alt = `Project Detail ${index + 1}`;
+                
+                // Xử lý nếu ảnh lỗi (để tránh khung hình xấu)
+                img.onerror = function() {
+                    this.style.display = 'none';
+                };
+
+                card.appendChild(img);
+                gallery.appendChild(card);
+            });
 
             modal.classList.add('open');
             document.body.style.overflow = 'hidden'; 
